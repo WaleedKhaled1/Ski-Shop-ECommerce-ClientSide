@@ -4,6 +4,7 @@ import { Product } from '../../../shared/models/product';
 import { CurrencyPipe } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatAnchor } from '@angular/material/button';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-product-item',
@@ -15,6 +16,8 @@ import { MatAnchor } from '@angular/material/button';
     MatIcon,
     MatCardActions,
     MatAnchor,
+    RouterLink,
+    RouterLinkActive,
   ],
   templateUrl: './product-item.component.html',
   styleUrl: './product-item.component.css',

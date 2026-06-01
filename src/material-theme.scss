@@ -4,6 +4,7 @@
   @include mat.button-overrides(
     (
       outlined-container-shape: 6px,
+      filled-container-shape: 6px,
     )
   );
 }
