@@ -1,3 +1,60 @@
-<div class="container mt-5">
-  <h1 class="text-3xl">Internal Server Error</h1>
+<div class="container mx-auto mt-10 px-4 max-w-4xl">
+  <div class="flex items-center gap-3 mb-4 text-red-600">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="2"
+      stroke="currentColor"
+      class="w-10 h-10"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
+      />
+    </svg>
+    <h1 class="text-3xl font-bold tracking-tight">Internal Server Error</h1>
+  </div>
+
+  <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-md mb-6 shadow-sm">
+    <p class="text-amber-800 font-medium">
+      Sorry, an unexpected error occurred on our internal server. Don't worry, the problem is not
+      with your device or angular(client side).
+    </p>
+  </div>
+
+  @if (error) {
+    <div
+      class="bg-gray-900 text-gray-100 rounded-lg shadow-xl overflow-hidden border border-gray-800"
+    >
+      <div class="p-5 font-mono text-sm space-y-4 overflow-x-auto">
+        <div>
+          <p class="text-red-400 font-bold mb-1">❌ Error Message:</p>
+          <code class="text-gray-300 bg-gray-950 px-2 py-1 rounded block border border-gray-800">
+            {{ error.error?.Message || error.Message }}
+          </code>
+        </div>
+
+        <div>
+          <p class="text-amber-400 font-bold mb-1">📍 Stack Trace:</p>
+          <p
+            class="text-xs text-gray-400 bg-gray-950 p-4 rounded border border-gray-800 leading-relaxed whitespace-pre-wrap max-h-96 overflow-y-auto font-mono text-left"
+            dir="ltr"
+          >
+            {{ error.error?.Details || error.Details }}
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+
+  <div class="mt-8 flex justify-center">
+    <button
+      routerLink="/"
+      class="bg-gray-800 hover:bg-gray-700 text-white font-medium py-2.5 px-6 rounded-md transition duration-200 shadow-md"
+    >
+      Return to Home
+    </button>
+  </div>
 </div>

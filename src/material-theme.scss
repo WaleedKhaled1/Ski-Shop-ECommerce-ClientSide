@@ -17,6 +17,23 @@
   );
 }
 
+.snackbar-error {
+  @include mat.snack-bar-overrides(
+    (
+      button-color: white,
+      container-color: red,
+    )
+  );
+}
+
+.snackbar-success {
+  @include mat.snack-bar-overrides(
+    (
+      button-color: black,
+      container-color: green,
+    )
+  );
+}
 html {
   height: 100%;
   @include mat.theme(

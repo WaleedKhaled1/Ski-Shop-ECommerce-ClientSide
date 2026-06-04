@@ -16,7 +16,6 @@ import {
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { ShopParams } from '../../shared/models/shopparams';
 import { Pagination } from '../../shared/models/pagination';
-import { CdkAriaLive } from '../../../../node_modules/@angular/cdk/types/_a11y-module-chunk';
 import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-shop',
