@@ -1,10 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { MatCard, MatCardContent, MatCardActions } from '@angular/material/card';
 import { Product } from '../../../shared/models/product';
 import { CurrencyPipe } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatAnchor } from '@angular/material/button';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { CartService } from '../../../core/services/cart.service';
+import { CdkAutofill } from '@angular/cdk/text-field';
 
 @Component({
   selector: 'app-product-item',
@@ -24,4 +26,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class ProductItemComponent {
   @Input() product?: Product;
+
+  cartService = inject(CartService);
 }

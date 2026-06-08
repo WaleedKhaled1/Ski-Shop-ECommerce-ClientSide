@@ -1,0 +1,48 @@
+<div class="mx-auto w-full flex-1 max-w-4xl">
+  <div class="space-y-4 rounded-lg border border-gray-200 bg-white shadow-sm p-4">
+    <p class="font-bold text-xl">Order summary</p>
+    <div class="space-y-4">
+      <div class="space-y-2">
+        <dl class="flex items-center justify-between gap-4">
+          <dt class="text-gray-500 font-medium">Subtotal:</dt>
+          <dd class="text-gray-900 font-medium">
+            {{ cartService.TotalAmount()?.subTotal | currency }}
+          </dd>
+        </dl>
+        <dl class="flex items-center justify-between gap-4">
+          <dt class="text-gray-500 font-medium">Discount:</dt>
+          <dd class="text-green-500 font-medium">
+            -{{ cartService.TotalAmount()?.discount | currency }}
+          </dd>
+        </dl>
+
+        <dl class="flex items-center justify-between gap-4">
+          <dt class="text-gray-500 font-medium">Delivery fee:</dt>
+          <dd class="text-gray-900 font-medium">
+            {{ cartService.TotalAmount()?.shipping | currency }}
+          </dd>
+        </dl>
+      </div>
+
+      <dl class="flex items-center justify-between gap-4 border-t border-gray-200 pt-2">
+        <dt class="textgray-500 font-medium">Total:</dt>
+        <dd class="text-gray-900 font-medium">{{ cartService.TotalAmount()?.total | currency }}</dd>
+      </dl>
+    </div>
+
+    <div class="flex flex-col gap-3">
+      <button mat-flat-button routerLink="/checkout">Checkout</button>
+      <button mat-button routerLink="/shop">Continue shopping</button>
+    </div>
+  </div>
+
+  <div class="border border-gray-200 bg-white shadow-sm mt-2 p-5">
+    <label class="mb-2 block text-sm font-medium">Do you have a voucher code?</label>
+    <mat-form-field appearance="outline">
+      <mat-label>Voucher code</mat-label>
+      <input matInput type="text" />
+    </mat-form-field>
+
+    <button class="w-full" mat-flat-button>Apply voucher</button>
+  </div>
+</div>
