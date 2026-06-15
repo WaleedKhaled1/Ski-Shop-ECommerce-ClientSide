@@ -19,8 +19,15 @@
         <mat-icon>shopping_cart</mat-icon>
       </a>
 
-      <button mat-stroked-button>Login</button>
-      <button mat-stroked-button>Register</button>
+      @if (accountService.currentUser()) {
+        <button [mat-menu-trigger-for]="menu" mat-button>
+          <mat-icon>arrow_drop_down</mat-icon>
+          {{ accountService.currentUser()?.email }}
+        </button>
+      } @else {
+        <button routerLink="account/login" mat-stroked-button>Login</button>
+        <button routerLink="account/register" mat-stroked-button>Register</button>
+      }
     </div>
   </div>
 </header>
@@ -30,3 +37,22 @@
     <mat-spinner diameter="80"></mat-spinner>
   </div>
 }
+
+<mat-menu #menu="matMenu" class="px-2">
+  <button class="px-3" mat-menu-item routerLink="/cart">
+    <mat-icon>shopping_cart</mat-icon>
+    My cart
+  </button>
+
+  <button class="px-3" mat-menu-item routerLink="/orders">
+    <mat-icon>history</mat-icon>
+    My orders
+  </button>
+
+  <mat-divider class="border-black!"></mat-divider>
+
+  <button class="px-3" mat-menu-item (click)="logout()">
+    <mat-icon>logout</mat-icon>
+    Logout
+  </button>
+</mat-menu>

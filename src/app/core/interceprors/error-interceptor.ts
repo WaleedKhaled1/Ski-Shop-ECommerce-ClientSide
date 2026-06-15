@@ -10,6 +10,10 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const snackBar = inject(SnackBarService);
   return next(req).pipe(
     catchError((err: HttpErrorResponse) => {
+      if (err.status === 0) {
+        snackBar.error('The server is offline!');
+      }
+
       if (err.status === 500) {
         const navigationExtras: NavigationExtras = { state: { error: err.error } };
         route.navigateByUrl('/server-error', navigationExtras);
