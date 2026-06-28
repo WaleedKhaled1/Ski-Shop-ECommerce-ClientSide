@@ -39,6 +39,14 @@
 }
 
 <mat-menu #menu="matMenu" class="px-2">
+  @if (accountService.currentUser()?.roles?.includes('Admin')) {
+    <button class="px-3 text-red-600 font-semibold" mat-menu-item routerLink="/admin">
+      <mat-icon class="text-red-600!">admin_panel_settings</mat-icon>
+      Admin Dashboard
+    </button>
+    <mat-divider class="border-red-200!"></mat-divider>
+  }
+
   <button class="px-3" mat-menu-item routerLink="/cart">
     <mat-icon>shopping_cart</mat-icon>
     My cart

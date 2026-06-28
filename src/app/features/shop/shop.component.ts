@@ -7,12 +7,7 @@ import { FilterDialogComponent } from './filter-dialog/filter-dialog.component';
 import { MatIcon } from '@angular/material/icon';
 import { MatAnchor } from '@angular/material/button';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
-import {
-  MatListOption,
-  MatSelectionList,
-  MatActionList,
-  MatSelectionListChange,
-} from '@angular/material/list';
+import { MatListOption, MatSelectionList, MatSelectionListChange } from '@angular/material/list';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { ShopParams } from '../../shared/models/shopparams';
 import { Pagination } from '../../shared/models/pagination';
@@ -34,7 +29,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './shop.component.css',
 })
 export class ShopComponent implements OnInit {
-  product?: Pagination<Product>;
+  products?: Pagination<Product>;
   private shopService = inject(ShopService);
   private dialogService = inject(MatDialog);
 
@@ -46,7 +41,7 @@ export class ShopComponent implements OnInit {
 
   shopParams = new ShopParams();
 
-  pageSizeOptions = [5, 10, 15, 20];
+  pageSizeOptions = [5, 10, 15, 20, 25];
 
   ngOnInit(): void {
     this.initializeShop();
@@ -61,7 +56,7 @@ export class ShopComponent implements OnInit {
 
   getProducts() {
     this.shopService.getProducts(this.shopParams).subscribe({
-      next: (response) => (this.product = response),
+      next: (response) => (this.products = response),
       error: (error) => console.log(error),
     });
   }

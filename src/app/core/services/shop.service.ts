@@ -49,4 +49,16 @@ export class ShopService {
   getProduct(id: number) {
     return this.http.get<Product>(this.baseUrl + 'products/' + id);
   }
+
+  createProduct(product: Partial<Product>) {
+    return this.http.post<Product>(this.baseUrl + 'products', product);
+  }
+
+  updateProduct(id: number, product: Partial<Product>) {
+    return this.http.put(this.baseUrl + 'products/' + id, product);
+  }
+
+  deleteProduct(id: number) {
+    return this.http.delete(this.baseUrl + 'products/' + id);
+  }
 }

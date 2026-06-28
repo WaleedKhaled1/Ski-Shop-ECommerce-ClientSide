@@ -1,0 +1,135 @@
+<div class="p-6 bg-gray-50 min-h-screen">
+  <!-- Top Control Bar (Title & Controls) -->
+  <div class="flex flex-col xl:flex-row justify-between items-stretch xl:items-center gap-4 mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Admin Dashboard - Products</h1>
+      @if (products) {
+        <p class="text-xs text-gray-500 mt-0.5">Total products: {{ products.totalCount }}</p>
+      }
+    </div>
+
+    <!-- Controls Wrapper (Paginator, Search, Button) matching image_7f86c9.png -->
+    <div class="flex flex-col md:flex-row items-center justify-end gap-4 flex-1 w-full xl:w-auto">
+      @if (products) {
+        <!-- Native Paginator style without forcing borders -->
+        <mat-paginator
+          (page)="handlePagination($event)"
+          [length]="products.totalCount"
+          [pageSize]="shopParams.pageSize"
+          [pageIndex]="shopParams.pageNumber - 1"
+          [pageSizeOptions]="pageSizeOptions"
+          aria-label="Select page"
+          [showFirstLastButtons]="true"
+          class="bg-transparent text-sm"
+        >
+        </mat-paginator>
+
+        <!-- Search Bar with Absolute Icon -->
+        <form class="relative w-full md:w-64" (ngSubmit)="loadProducts()">
+          <input
+            type="search"
+            class="block border border-gray-300 w-full rounded-lg py-2 pl-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            placeholder="Search products..."
+            [(ngModel)]="shopParams.search"
+            name="search"
+          />
+          <button
+            type="submit"
+            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-blue-600"
+          >
+            <mat-icon class="text-lg">search</mat-icon>
+          </button>
+        </form>
+      }
+
+      <!-- Styled Add Product Button -->
+      <button
+        (click)="openCreateModal()"
+        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-200 whitespace-nowrap w-full md:w-auto text-sm"
+      >
+        + Add Product
+      </button>
+    </div>
+  </div>
+
+  <!-- Pure Data Table -->
+  @if (products) {
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-100">
+          <tr>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Product
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Brand / Type
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Price
+            </th>
+            <th
+              class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          @for (product of products.data; track product.id) {
+            <tr class="hover:bg-gray-50 transition">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="h-10 w-10">
+                    <img
+                      class="h-10 w-10 rounded-full object-cover shadow-sm border"
+                      [src]="product.pictureUrl"
+                      [alt]="product.name"
+                    />
+                  </div>
+                  <div class="ml-4">
+                    <div class="text-sm font-medium text-gray-950">{{ product.name }}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span
+                  class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800"
+                >
+                  {{ product.brand }}
+                </span>
+                <span
+                  class="ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800"
+                >
+                  {{ product.type }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 font-medium">
+                ${{ product.price }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                <button
+                  (click)="editProduct(product)"
+                  class="text-indigo-600 hover:text-indigo-900 transition"
+                >
+                  Edit
+                </button>
+                <button
+                  (click)="onDeleteProduct(product.id)"
+                  class="text-red-600 hover:text-red-900 transition"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
