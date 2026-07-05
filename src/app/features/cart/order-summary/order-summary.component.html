@@ -30,19 +30,21 @@
       </dl>
     </div>
 
-    <div class="flex flex-col gap-3">
-      <button mat-flat-button routerLink="/checkout">Checkout</button>
-      <button mat-button routerLink="/shop">Continue shopping</button>
-    </div>
+    @if (location.path() !== '/checkout') {
+      <div class="flex flex-col gap-3">
+        <button mat-flat-button routerLink="/checkout">Checkout</button>
+        <button mat-button routerLink="/shop">Continue shopping</button>
+      </div>
+    }
   </div>
 
   <div class="border border-gray-200 bg-white shadow-sm mt-2 p-5">
     <label class="mb-2 block text-sm font-medium">Do you have a voucher code?</label>
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="w-full">
       <mat-label>Voucher code</mat-label>
       <input matInput type="text" />
     </mat-form-field>
 
-    <button class="w-full" mat-flat-button>Apply voucher</button>
+    <button class="w-full" mat-flat-button>Apply code</button>
   </div>
 </div>

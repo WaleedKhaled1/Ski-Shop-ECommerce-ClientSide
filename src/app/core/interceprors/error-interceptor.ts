@@ -34,7 +34,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       if (err.status === 401) {
-        snackBar.error(err.error.title || err.error);
+        snackBar.error('Invalid credentials!');
       }
 
       if (err.status === 404) {

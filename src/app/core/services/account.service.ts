@@ -2,7 +2,8 @@ import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Address, User } from '../../shared/models/user';
-import { map } from 'rxjs';
+import { map, tap } from 'rxjs';
+import { CartService } from './cart.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ export class AccountService {
   baseUrl = environment.apiUrl;
   http = inject(HttpClient);
   currentUser = signal<User | null>(null);
-
+  cartService = inject(CartService);
   login(values: any) {
     let params = new HttpParams();
     params = params.append('useCookies', true);
@@ -23,6 +24,8 @@ export class AccountService {
   }
 
   logout() {
+    localStorage.removeItem('cart_id');
+    this.cartService.cart.set(null);
     return this.http.post(this.baseUrl + 'account/logout', {});
   }
 
@@ -36,7 +39,14 @@ export class AccountService {
   }
 
   updateAddress(address: Address) {
-    return this.http.post<Address>(this.baseUrl + 'account/address', address);
+    return this.http.post<Address>(this.baseUrl + 'account/address', address).pipe(
+      tap(() => {
+        this.currentUser.update((user) => {
+          if (user) user.address = address;
+          return user;
+        });
+      }),
+    );
   }
 
   authState() {
