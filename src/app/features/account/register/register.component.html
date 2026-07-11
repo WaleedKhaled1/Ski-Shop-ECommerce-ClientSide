@@ -13,14 +13,5 @@
     <button [disabled]="registerForm.invalid" type="submit" mat-flat-button class="w-full py-6">
       Rigester
     </button>
-    @if (validationErrors) {
-      <div class="mx-auto bg-white text-red-600 mb-6 p-4">
-        <ul>
-          @for (error of validationErrors; track $index) {
-            <li>{{ error }}</li>
-          }
-        </ul>
-      </div>
-    }
   </form>
 </mat-card>

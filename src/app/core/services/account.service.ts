@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Address, User } from '../../shared/models/user';
 import { map, tap } from 'rxjs';
 import { CartService } from './cart.service';
+import { SignalrService } from './signalr.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,10 +14,16 @@ export class AccountService {
   http = inject(HttpClient);
   currentUser = signal<User | null>(null);
   cartService = inject(CartService);
+  signalrService = inject(SignalrService);
+
   login(values: any) {
     let params = new HttpParams();
     params = params.append('useCookies', true);
-    return this.http.post<User>(this.baseUrl + 'login', values, { params });
+    return this.http.post<User>(this.baseUrl + 'login', values, { params }).pipe(
+      tap((user) => {
+        if (user) this.signalrService.createHubConnection();
+      }),
+    );
   }
 
   register(values: any) {
@@ -24,9 +31,15 @@ export class AccountService {
   }
 
   logout() {
-    localStorage.removeItem('cart_id');
-    this.cartService.cart.set(null);
-    return this.http.post(this.baseUrl + 'account/logout', {});
+    if (this.cartService.cart()) {
+      this.cartService.deleteCart();
+    }
+
+    return this.http.post(this.baseUrl + 'account/logout', {}).pipe(
+      tap((user) => {
+        if (user) this.signalrService.stopHubConnection();
+      }),
+    );
   }
 
   getUserInfo() {

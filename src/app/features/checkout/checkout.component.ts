@@ -21,6 +21,9 @@ import { CheckoutReviewComponent } from './checkout-review/checkout-review.compo
 import { CartService } from '../../core/services/cart.service';
 import { CurrencyPipe } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Address } from '../../shared/models/user';
+import { CreateOrderDto, ShippingAddress } from '../../shared/models/order';
+import { OrderService } from '../../core/services/order.service';
 @Component({
   selector: 'app-checkout',
   imports: [
@@ -42,6 +45,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   accountService = inject(AccountService);
   cartService = inject(CartService);
   snackBarService = inject(SnackBarService);
+  orderService = inject(OrderService);
   router = inject(Router);
 
   addressElement?: StripeAddressElement;
@@ -81,7 +85,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   async onStepChange(event: StepperSelectionEvent) {
     if (event.selectedIndex === 1) {
       if (this.saveAddress) {
-        const address = await this.getAddressFromAddressElement();
+        const address = (await this.getAddressFromAddressElement()) as Address;
 
         address && (await firstValueFrom(this.accountService.updateAddress(address)));
       }
@@ -109,11 +113,63 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  async getAddressFromAddressElement() {
+  async confirmPayment(stepper: MatStepper) {
+    this.loading = true;
+    try {
+      if (this.confirmationToken) {
+        const result = await this.stripeService.confirmPayment(this.confirmationToken);
+        if (result.paymentIntent?.status === 'succeeded') {
+          const order = await this.createOrderModel();
+          const orderResult = await firstValueFrom(this.orderService.createOrder(order));
+
+          if (orderResult) {
+            this.cartService.deleteCart();
+            this.cartService.selectedDelivery.set(null);
+            this.router.navigateByUrl('checkout-success');
+          } else {
+            throw new Error('Failed with order creation ');
+          }
+        } else if (result.error) {
+          throw new Error(result.error.message);
+        } else {
+          throw new Error('Something went wrong!');
+        }
+      }
+    } catch (error: any) {
+      this.snackBarService.error(error.message || 'Somthing went wrong!');
+      stepper.previous();
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  async createOrderModel(): Promise<CreateOrderDto> {
+    const cart = this.cartService.cart();
+    const shippingAddress = (await this.getAddressFromAddressElement()) as ShippingAddress;
+    const card = this.confirmationToken?.payment_method_preview.card;
+
+    if (!cart?.id || !cart.deliveryMethodId || !card || !shippingAddress)
+      throw new Error('Problem with creating order model');
+
+    return {
+      cartId: cart.id,
+      deliveryMethodId: cart.deliveryMethodId,
+      shippingAddress: shippingAddress,
+      paymentSummary: {
+        last4: +card.last4,
+        brand: card.brand,
+        expMonth: card.exp_month,
+        expYear: card.exp_year,
+      },
+    };
+  }
+
+  async getAddressFromAddressElement(): Promise<Address | null | ShippingAddress> {
     if (this.addressElement) {
       const result = await this.addressElement.getValue();
       if (result) {
         return {
+          name: result.value.name,
           line1: result.value.address.line1,
           line2: result.value.address.line2 || undefined,
           city: result.value.address.city,
@@ -125,28 +181,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     }
 
     return null;
-  }
-
-  async confirmPayment(stepper: MatStepper) {
-    this.loading = true;
-    try {
-      if (this.confirmationToken) {
-        const result = await this.stripeService.confirmPayment(this.confirmationToken);
-
-        if (result.error) {
-          throw new Error(result.error.message);
-        } else {
-          this.cartService.deleteCart();
-          this.cartService.selectedDelivery.set(null);
-          this.router.navigateByUrl('checkout-success');
-        }
-      }
-    } catch (error: any) {
-      this.snackBarService.error(error.message || 'Somthing went wrong!');
-      stepper.previous();
-    } finally {
-      this.loading = false;
-    }
   }
 
   handleAddressChange = (event: StripeAddressElementChangeEvent) => {
